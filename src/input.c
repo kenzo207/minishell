@@ -41,40 +41,51 @@ void enable_raw_mode(void)
 
 char *read_command_line(void)
 {
-    char *buf = malloc(sizeof(char) * 1024); // simplistic buffer
+    char *buf = malloc(sizeof(char) * 1024);
     int i = 0;
     char c = 0;
     int nread;
+    int is_tty = isatty(STDIN_FILENO);
 
     if (!buf) {
         perror("malloc");
         return NULL;
     }
 
-    // Enable raw mode for this read
-    enable_raw_mode();
+    // Only enable raw mode if stdin is a TTY
+    if (is_tty) {
+        enable_raw_mode();
+    }
 
     while (1) {
         nread = read(STDIN_FILENO, &c, 1);
         if (nread == -1 && errno != EAGAIN) {
              perror("read");
-             disable_raw_mode();
+             if (is_tty) disable_raw_mode();
              free(buf);
              exit(1);
         }
-        if (nread == 0) continue; // Timeout or nothing read
+        if (nread == 0) {
+            // EOF in non-interactive mode
+            if (!is_tty && i == 0) {
+                if (is_tty) disable_raw_mode();
+                free(buf);
+                return NULL;
+            }
+            continue;
+        }
 
-        // Handle Ctrl-D (EOF) on empty line
-        if (c == 4 && i == 0) {
-            disable_raw_mode();
+        // Handle Ctrl-D (EOF) on empty line in interactive mode
+        if (c == 4 && i == 0 && is_tty) {
+            if (is_tty) disable_raw_mode();
             free(buf);
             return NULL;
         }
 
         if (c == '\n' || c == '\r') {
-             my_putchar('\n');
+             if (is_tty) my_putchar('\n');
              break;
-        } else if (c == 127 || c == 8) { // Backspace or Ctrl-H
+        } else if ((c == 127 || c == 8) && is_tty) {
             if (i > 0) {
                 my_putstr("\b \b");
                 i--;
@@ -82,14 +93,15 @@ char *read_command_line(void)
         } else if (c >= 32 && c < 127) {
             if (i < 1023) {
                 buf[i++] = c;
-                my_putchar(c);
+                if (is_tty) my_putchar(c);
             }
         }
-        // TODO: Handle escape sequences for arrows
     }
     buf[i] = '\0';
     
-    // Disable raw mode after reading
-    disable_raw_mode();
+    // Disable raw mode after reading (only if it was enabled)
+    if (is_tty) {
+        disable_raw_mode();
+    }
     return buf;
 }
