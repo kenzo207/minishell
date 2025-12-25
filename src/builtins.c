@@ -125,4 +125,7 @@ void my_functions(cmd_t *cmd, shell_state_t *state, int gl)
             write(2, "unsetenv: Too few arguments\n", 29);
         }
     }
+    else if (my_strcmp(cmd->args, "help") == 0){
+        display_help();
+    }
 }

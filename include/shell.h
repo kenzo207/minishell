@@ -70,6 +70,7 @@ char **my_unsetenv(char **env, char *name);
 // --- builtins.c ---
 void my_cd(char *src, char **env, char **argv);
 void my_functions(cmd_t *cmd, shell_state_t *state, int gl); // Updated to use shell_state
+void display_help(void);
 
 // --- parsing.c ---
 char *clean_str(char *str);
