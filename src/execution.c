@@ -146,7 +146,6 @@ int handle_separators(char **env, size_t size, int gl, tree_node_t *node, char *
     if (has_pipe(args) == 2) {
         node = parse_separator(args);
         handle_pipe(env, size, gl, node);
-        funt(); // What is this? Keeping it for now but it seems to reset stdio?
     }
     if (has_semicolon(args) == 3){ 
         node = parse_separator(args);
