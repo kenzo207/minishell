@@ -13,11 +13,17 @@ All notable changes to this project will be documented in this file.
 - Non-interactive mode support (no prompt if stdin is not TTY)
 - Test infrastructure (test_builtins.sh, test_execution.sh, run_all.sh)
 - docs/TODO.md for backlog tracking
+- setenv/unsetenv builtins with full environment modification
+- exit builtin with status code support
+- cd - (previous directory) support with OLDPWD
+- help builtin with comprehensive documentation
 
 ### Changed
 - Updated main.c to copy environment on startup
 - Improved prompt display (only show if TTY)
 - Fixed read_command_line to check isatty before enabling raw mode
+- Updated entire execution chain to use shell_state_t
+- Enhanced cd builtin with better error messages (ENOTDIR, ENOENT, EACCES)
 
 ### Fixed
 - Fixed input.c raw mode lifecycle (enable/disable on each read)
@@ -26,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - Fixed env.c pointer initialization (NULL instead of '\0')
 - Removed mysterious funt() call from execution.c
 - Fixed non-interactive mode (shell now works with piped input)
+- Fixed help builtin recognition in move() function
 
 ### Removed
 
