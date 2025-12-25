@@ -17,6 +17,15 @@ All notable changes to this project will be documented in this file.
 - exit builtin with status code support
 - cd - (previous directory) support with OLDPWD
 - help builtin with comprehensive documentation
+- **Robust tokenizer with quote and operator support**
+- **Complete AST parser (command, pipeline, sequence nodes)**
+- **AST executor with redirection support**
+- **Output redirection (>)**
+- **Append redirection (>>)**
+- **Input redirection (<)**
+- **Pipeline execution via AST**
+- **Sequence execution via AST**
+- RESUME_FINAL.md comprehensive summary
 
 ### Changed
 - Updated main.c to copy environment on startup
@@ -24,6 +33,8 @@ All notable changes to this project will be documented in this file.
 - Fixed read_command_line to check isatty before enabling raw mode
 - Updated entire execution chain to use shell_state_t
 - Enhanced cd builtin with better error messages (ENOTDIR, ENOENT, EACCES)
+- **Replaced legacy parsing with tokenizer → parser → AST → executor chain**
+- **Simplified main shell loop using AST execution**
 
 ### Fixed
 - Fixed input.c raw mode lifecycle (enable/disable on each read)
@@ -33,6 +44,8 @@ All notable changes to this project will be documented in this file.
 - Removed mysterious funt() call from execution.c
 - Fixed non-interactive mode (shell now works with piped input)
 - Fixed help builtin recognition in move() function
+- Fixed duplicate type definitions in tokenizer.c and ast.c
+- Fixed PATH parsing in AST executor
 
 ### Removed
 

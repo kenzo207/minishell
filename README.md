@@ -6,19 +6,25 @@ A comprehensive UNIX shell implementation inspired by TCSH, featuring advanced p
 
 | Feature | Status | Description |
 |---------|--------|-------------|
-| **Basic Execution** | ✅ | Execute commands via PATH and absolute paths |
-| **Built-in Commands** | ✅ | `cd`, `env`, `setenv`, `unsetenv`, `exit` |
-| **Pipelines** | 🚧 | Multi-command pipelines with `\|` |
-| **Redirections** | 🚧 | `>`, `>>`, `<`, `<<` (heredoc) |
-| **Sequences** | 🚧 | Command sequences with `;` |
-| **Quote Handling** | 🚧 | Single `'...'` and double `"..."` quotes |
+| **Builtins** | ✅ | cd (with cd -), env, setenv, unsetenv, exit, help |
+| **Environment** | ✅ | Mutable environment with full modification support |
+| **Pipelines** | ✅ | Multi-command pipelines via AST (`cmd1 \| cmd2 \| cmd3`) |
+| **Sequences** | ✅ | Command sequences via AST (`cmd1 ; cmd2 ; cmd3`) |
+| **Redirections** | ✅ | Output (>), Append (>>), Input (<) |
+| **Quotes** | ✅ | Single ('...') and double ("...") quote handling |
+| **Operators** | ✅ | Pipe (\|), Semicolon (;), Redirections (>, >>, <) |
+| **Tokenizer** | ✅ | Robust tokenizer with escape sequences |
+| **AST Parser** | ✅ | Complete Abstract Syntax Tree parser |
+| **Non-interactive** | ✅ | Works with piped input (`echo "cmd" \| ./mysh`) |
+| **Error Handling** | ✅ | Comprehensive error messages to stderr |
+| **Exit Status** | ✅ | Proper exit status tracking and propagation |
+| **PATH Resolution** | ✅ | Automatic command search in PATH |
+| **Raw Mode** | ✅ | Terminal raw mode for interactive input |
 | **Variable Expansion** | 🚧 | `$VAR`, `$?`, `$$` |
 | **Aliases** | 🚧 | Command aliases with `alias`/`unalias` |
 | **History** | 🚧 | Command history with `!!` and `!n` |
 | **Line Editing** | 🚧 | Arrow keys, Home/End, Ctrl-A/E/K/U |
 | **Beautiful Prompt** | 🚧 | Colored prompt with user@host:path |
-| **Error Handling** | ✅ | Helpful error messages to stderr |
-
 **Legend**: ✅ Implemented | 🚧 In Progress | ⏳ Planned
 
 ## Building
