@@ -63,31 +63,12 @@ char *get_current_dir(char **env)
 // Display beautiful colored prompt
 void display_prompt(shell_state_t *state)
 {
-    char *username = get_username();
-    char *hostname = get_hostname();
     char *dir = get_current_dir(state->env);
     
-    // Format: [user@host:dir]$ 
-    // Wrap color codes to prevent cursor offset issues
-    // Use write() to avoid mini_printf interpretation issues
-    
-    write(1, COLOR_BOLD, my_strlen(COLOR_BOLD));
-    write(1, COLOR_GREEN, my_strlen(COLOR_GREEN));
-    write(1, username, my_strlen(username));
-    write(1, COLOR_RESET, my_strlen(COLOR_RESET));
-    
-    write(1, "@", 1);
-    
-    write(1, COLOR_BLUE, my_strlen(COLOR_BLUE));
-    write(1, hostname, my_strlen(hostname));
-    write(1, COLOR_RESET, my_strlen(COLOR_RESET));
-    
-    write(1, ":", 1);
-    
+    // Simple colored prompt: directory$ 
     write(1, COLOR_CYAN, my_strlen(COLOR_CYAN));
     write(1, dir, my_strlen(dir));
     write(1, COLOR_RESET, my_strlen(COLOR_RESET));
-    
     write(1, COLOR_YELLOW, my_strlen(COLOR_YELLOW));
     write(1, "$ ", 2);
     write(1, COLOR_RESET, my_strlen(COLOR_RESET));
@@ -97,5 +78,6 @@ void display_prompt(shell_state_t *state)
 void display_simple_prompt(shell_state_t *state)
 {
     char *dir = get_current_dir(state->env);
-    mini_printf("tcsh:%s$ ", dir);
+    write(1, dir, my_strlen(dir));
+    write(1, "$ ", 2);
 }

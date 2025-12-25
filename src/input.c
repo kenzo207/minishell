@@ -83,17 +83,21 @@ char *read_command_line(void)
         }
 
         if (c == '\n' || c == '\r') {
-             if (is_tty) my_putchar('\n');
+             my_putchar('\n');
              break;
-        } else if ((c == 127 || c == 8) && is_tty) {
+        } else if (c == 127 || c == 8) { // Backspace or Ctrl-H
             if (i > 0) {
                 my_putstr("\b \b");
                 i--;
             }
+        } else if (c == 9) { // Tab key
+            // Tab completion - for now just ignore
+            // TODO: implement file/command completion
+            continue;
         } else if (c >= 32 && c < 127) {
             if (i < 1023) {
                 buf[i++] = c;
-                if (is_tty) my_putchar(c);
+                my_putchar(c);
             }
         }
     }
