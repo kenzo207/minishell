@@ -6,24 +6,6 @@
 */
 #include "../include/shell.h"
 
-// Token type definitions
-typedef enum {
-    TOKEN_WORD,
-    TOKEN_PIPE,
-    TOKEN_SEMICOLON,
-    TOKEN_REDIR_OUT,      // >
-    TOKEN_REDIR_APPEND,   // >>
-    TOKEN_REDIR_IN,       // <
-    TOKEN_HEREDOC,        // <<
-    TOKEN_EOF
-} token_type_t;
-
-typedef struct token_s {
-    token_type_t type;
-    char *value;
-    struct token_s *next;
-} token_t;
-
 // Create a new token
 token_t *create_token(token_type_t type, char *value)
 {
