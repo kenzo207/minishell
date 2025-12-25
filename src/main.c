@@ -8,29 +8,33 @@
 
 void my_shell(char **av, shell_state_t *state)
 {
-    size_t size = 0;
     char *args = NULL;
     int gl = 0;
-    char **tab = NULL;
-    int i = 0;
-    cmd_t *cmd;
-    tree_node_t *node;
 
-    while (gl != -1){
+    while (1){
         if (isatty(STDIN_FILENO))
             mini_printf("tcsh$> ");
+        
         args = read_command_line();
         if (args == NULL) break;
         
-        gl = my_strlen(args); 
-
-        if (has_pipe(args) != 2 && has_semicolon(args) != 3){
-            cmd = parse_command(args, tab);
-            execute_command(state, size, gl, cmd);
-        } else {
-             handle_separators(state, size, gl, node, args); 
+        gl = my_strlen(args);
+        if (gl == 0 || (args[0] == '\n')) {
+            free(args);
+            continue;
         }
-        wait(&i);
+        
+        // New AST-based execution
+        token_t *tokens = tokenize(args);
+        if (tokens) {
+            ast_node_t *ast = parse(tokens);
+            if (ast) {
+                execute_ast_node(ast, state);
+                free_ast(ast);
+            }
+            free_tokens(tokens);
+        }
+        
         free(args);
     }
 }
