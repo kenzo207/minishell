@@ -17,19 +17,65 @@ void my_cd(char *src, char **env, char **argv)
 {
     int k = 0;
     char *str = get_home(env);
-
-    if (argv[1] == NULL){
-        if (str) chdir(str);
-    }
-    if (argv[1] != NULL && argv[1][0] != '-'){
-        k = chdir(argv[1]);
-    }
-    if (k != 0 && errno != ENOTDIR){
-        write(2, "mysh: cd: ", 10);
-        write(2, argv[1], my_strlen(argv[1]));
-        write(2, ": No such file or directory\n", 28);
+    char cwd[1024];
+    char *oldpwd = NULL;
+    
+    // Get current directory for OLDPWD
+    if (getcwd(cwd, sizeof(cwd)) == NULL) {
+        perror("getcwd");
+        if (str) free(str);
         return;
     }
+
+    // cd with no arguments - go home
+    if (argv[1] == NULL){
+        if (str) {
+            k = chdir(str);
+            if (k == 0) {
+                // Update OLDPWD
+                setenv("OLDPWD", cwd, 1);
+            }
+        }
+    }
+    // cd - : go to previous directory
+    else if (argv[1][0] == '-' && argv[1][1] == '\0'){
+        oldpwd = getenv("OLDPWD");
+        if (oldpwd) {
+            k = chdir(oldpwd);
+            if (k == 0) {
+                mini_printf("%s\n", oldpwd);
+                setenv("OLDPWD", cwd, 1);
+            }
+        } else {
+            write(2, "mysh: cd: OLDPWD not set\n", 25);
+        }
+    }
+    // cd <path>
+    else if (argv[1][0] != '-'){
+        k = chdir(argv[1]);
+        if (k == 0) {
+            setenv("OLDPWD", cwd, 1);
+        }
+    }
+    
+    // Handle errors
+    if (k != 0){
+        write(2, "mysh: cd: ", 10);
+        if (argv[1]) {
+            write(2, argv[1], my_strlen(argv[1]));
+            write(2, ": ", 2);
+        }
+        if (errno == ENOTDIR) {
+            write(2, "Not a directory\n", 16);
+        } else if (errno == ENOENT) {
+            write(2, "No such file or directory\n", 26);
+        } else if (errno == EACCES) {
+            write(2, "Permission denied\n", 18);
+        } else {
+            perror("");
+        }
+    }
+    
     if (str) free(str);
 }
 
