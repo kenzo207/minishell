@@ -13,7 +13,7 @@ void my_shell(char **av, shell_state_t *state)
 
     while (1){
         if (isatty(STDIN_FILENO))
-            mini_printf("tcsh$> ");
+            display_prompt(state);  // Beautiful colored prompt
         
         args = read_command_line();
         if (args == NULL) break;

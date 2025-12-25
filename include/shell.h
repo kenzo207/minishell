@@ -45,14 +45,17 @@ typedef struct shell_state_s {
 // --- utils.c ---
 int my_strlen(char *str);
 char *my_strcpy(char *dest, char const *str);
-char *my_strcat(char *dest, char *src);
-char *my_strdup(char *src);
-int my_strcmp(char *dest, char *src);
-int my_putchar(char c);
-int my_put_nbr(int nb);
-int my_putstr(char *str);
-int mini_printf(const char *format, ...);
+int my_strcmp(char *s1, char *s2);
+int my_strncmp(char *s1, char *s2, int n);
+char *my_strdup(char const *src);
+void my_putchar(char c);
+void my_putstr(char *str);
+int mini_printf(char *str, ...);
 char **my_str_to_word_array(char *str, char sep);
+
+// --- prompt.c ---
+void display_prompt(shell_state_t *state);
+void display_simple_prompt(shell_state_t *state);
 char **my_str_tok(char *str, char *sep);
 
 // --- env.c ---

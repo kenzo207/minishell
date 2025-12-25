@@ -59,18 +59,33 @@ char *my_strdup(char *src)
     return dest;
 }
 
-int my_strcmp(char *dest, char *src)
+int my_strcmp(char *s1, char *s2)
 {
     int i = 0;
 
-    if (my_strlen(src) != my_strlen(dest)){
+    if (!s1 || !s2)
         return -1;
+    while (s1[i] != '\0' && s2[i] != '\0') {
+        if (s1[i] != s2[i])
+            return (s1[i] - s2[i]);
+        i++;
     }
-    for (i = 0; src[i] != 0; i++) {
-        if (src[i] != dest[i]) {
-            return -1;
-        }
+    return (s1[i] - s2[i]);
+}
+
+int my_strncmp(char *s1, char *s2, int n)
+{
+    int i = 0;
+
+    if (!s1 || !s2)
+        return -1;
+    while (i < n && s1[i] != '\0' && s2[i] != '\0') {
+        if (s1[i] != s2[i])
+            return (s1[i] - s2[i]);
+        i++;
     }
+    if (i < n)
+        return (s1[i] - s2[i]);
     return 0;
 }
 
