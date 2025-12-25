@@ -37,6 +37,11 @@ typedef struct path_state_s {
     int index;
 } path_state_t;
 
+typedef struct shell_state_s {
+    char **env;
+    int last_exit_status;
+} shell_state_t;
+
 // --- utils.c ---
 int my_strlen(char *str);
 char *my_strcpy(char *dest, char const *str);

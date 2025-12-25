@@ -1,12 +1,12 @@
 /*
 ** EPITECH PROJECT, 2024
 ** TCSH
-** File description:
+** File description:**
 ** main.c
 */
 #include "../include/shell.h"
 
-void my_shell(char **av, char **env)
+void my_shell(char **av, shell_state_t *state)
 {
     size_t size = 0;
     char *args = NULL;
@@ -17,27 +17,42 @@ void my_shell(char **av, char **env)
     tree_node_t *node;
 
     while (gl != -1){
-        mini_printf("tcsh$> ");
+        if (isatty(STDIN_FILENO))
+            mini_printf("tcsh$> ");
         args = read_command_line();
         if (args == NULL) break;
         
         gl = my_strlen(args); 
-        // Emulate getline return length slightly for logic continuity, 
-        // but existing logic just checked gl != -1. 
-        // We will make read_command_line return NULL on EOF/Ctrl-D.
 
         if (has_pipe(args) != 2 && has_semicolon(args) != 3){
             cmd = parse_command(args, tab);
-            execute_command(env, size, gl, cmd);
+            execute_command(state->env, size, gl, cmd);
         } else {
-             handle_separators(env, size, gl, node, args); 
+             handle_separators(state->env, size, gl, node, args); 
         }
         wait(&i);
+        free(args);
     }
 }
 
 int main(int ac, char **av, char **env)
 {
-    my_shell(av, env);
-    return 0;
+    shell_state_t state;
+    
+    // Copy environment to make it mutable
+    state.env = copy_env(env);
+    if (!state.env) {
+        write(2, "mysh: failed to copy environment\n", 34);
+        return 1;
+    }
+    state.last_exit_status = 0;
+    
+    my_shell(av, &state);
+    
+    // Free environment copy
+    for (int i = 0; state.env[i]; i++)
+        free(state.env[i]);
+    free(state.env);
+    
+    return state.last_exit_status;
 }
