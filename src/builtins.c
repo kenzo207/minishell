@@ -43,7 +43,7 @@ void my_cd(char *src, char **env, char **argv)
         if (oldpwd) {
             k = chdir(oldpwd);
             if (k == 0) {
-                mini_printf("%s\n", oldpwd);
+                // Don't print path - it messes up the prompt
                 setenv("OLDPWD", cwd, 1);
             }
         } else {
