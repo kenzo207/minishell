@@ -85,6 +85,7 @@ void move(shell_state_t *state, size_t size, int gl, cmd_t *cmd)
     || my_strcmp(cmd->args, "exit") == 0 || gl < 0
     || my_strcmp(cmd->args, "setenv") == 0
     || my_strcmp(cmd->args, "unsetenv") == 0
+    || my_strcmp(cmd->args, "help") == 0
     || (cmd->args[0] == '.' && cmd->args[1] == '/')){
         my_functions(cmd, state, gl);
     } else if (my_strcmp(cmd->args, " ") != 0
