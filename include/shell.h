@@ -56,6 +56,11 @@ char *get_path(char **env);
 char **clean_path(char **env);
 char *get_home(char **env);
 void my_setenv(char *str);
+int count_env(char **env);
+char **copy_env(char **env);
+int find_env_var(char **env, char *name);
+char **my_setenv_full(char **env, char *name, char *value);
+char **my_unsetenv(char **env, char *name);
 
 // --- builtins.c ---
 void my_cd(char *src, char **env, char **argv);
