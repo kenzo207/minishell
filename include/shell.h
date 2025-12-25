@@ -104,6 +104,49 @@ void free_tokens(token_t *tokens);
 token_t *tokenize(char *input);
 void print_tokens(token_t *tokens);
 
+// --- ast.c ---
+typedef enum {
+    AST_COMMAND,
+    AST_PIPELINE,
+    AST_SEQUENCE,
+    AST_REDIRECT
+} ast_node_type_t;
+
+typedef enum {
+    REDIR_OUTPUT,
+    REDIR_APPEND,
+    REDIR_INPUT,
+    REDIR_HEREDOC
+} redir_type_t;
+
+typedef struct redir_s {
+    redir_type_t type;
+    char *target;
+    struct redir_s *next;
+} redir_t;
+
+typedef struct ast_node_s {
+    ast_node_type_t type;
+    union {
+        struct {
+            char **argv;
+            redir_t *redirs;
+        } command;
+        struct {
+            struct ast_node_s *left;
+            struct ast_node_s *right;
+        } binary;
+    } data;
+} ast_node_t;
+
+ast_node_t *create_command_node(char **argv, redir_t *redirs);
+ast_node_t *create_binary_node(ast_node_type_t type, ast_node_t *left, ast_node_t *right);
+redir_t *create_redir(redir_type_t type, char *target);
+void free_redirs(redir_t *redirs);
+void free_ast(ast_node_t *node);
+ast_node_t *parse(token_t *tokens);
+void print_ast(ast_node_t *node, int depth);
+
 // --- execution.c ---
 int process_cmd(cmd_t *cmd, char **env);
 void handle_path(char **env, cmd_t *cmd);
