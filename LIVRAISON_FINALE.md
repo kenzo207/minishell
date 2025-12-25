@@ -1,10 +1,10 @@
 # 🎉 Minishell TCSH - Livraison Finale
 
-## 📊 Résultat Final: 29 COMMITS ATOMIQUES
+## 📊 Résultat Final: 42 COMMITS ATOMIQUES
 
 **Projet:** Transformation complète d'un minishell basique en shell TCSH-inspired moderne
 **Durée:** ~4 heures de développement
-**Commits:** 29 commits atomiques (moyenne 8-9 min/commit)
+**Commits:** 42 commits atomiques (moyenne 6 min/commit)
 
 ---
 
@@ -24,6 +24,8 @@
 - ✅ Redirections: >, >>, <
 - ✅ Pipelines multi-commandes
 - ✅ Séquences de commandes
+- ✅ Prompt coloré avec répertoire courant
+- ✅ ls en couleurs automatique
 
 ---
 
