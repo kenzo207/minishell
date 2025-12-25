@@ -91,8 +91,10 @@ char *read_command_line(void)
                 i--;
             }
         } else if (c == 9) { // Tab key
-            // Tab completion - for now just ignore
-            // TODO: implement file/command completion
+            // Tab completion
+            buf[i] = '\0'; // Null-terminate for completion
+            complete_input(buf, &i);
+            buf[i] = '\0'; // Update null terminator
             continue;
         } else if (c >= 32 && c < 127) {
             if (i < 1023) {
