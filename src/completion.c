@@ -72,16 +72,17 @@ done:
 }
 
 // Complete the current input
-void complete_input(char *buf, int *pos)
+int complete_input(char *buf, int *pos, shell_state_t *state)
 {
     int count = 0;
     char **matches = get_completions(buf, &count);
+    int need_reprint = 0;
     
     if (count == 0) {
         // No match - beep
         write(1, "\a", 1);
         if (matches) free(matches);
-        return;
+        return 0;
     }
     
     if (count == 1) {
@@ -121,6 +122,7 @@ void complete_input(char *buf, int *pos)
         }
         if (count % 5 != 0) my_putchar('\n');
         
+        need_reprint = 1;
         free(common);
     }
     
@@ -128,4 +130,6 @@ void complete_input(char *buf, int *pos)
     for (int i = 0; i < count; i++)
         free(matches[i]);
     free(matches);
+    
+    return need_reprint;
 }

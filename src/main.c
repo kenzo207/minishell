@@ -15,7 +15,7 @@ void my_shell(char **av, shell_state_t *state)
         if (isatty(STDIN_FILENO))
             display_prompt(state);  // Beautiful colored prompt
         
-        args = read_command_line();
+        args = read_command_line(state);
         if (args == NULL) break;
         
         gl = my_strlen(args);
