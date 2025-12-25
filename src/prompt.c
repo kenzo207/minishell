@@ -68,15 +68,29 @@ void display_prompt(shell_state_t *state)
     char *dir = get_current_dir(state->env);
     
     // Format: [user@host:dir]$ 
-    // With colors: [GREEN]user[RESET]@[BLUE]host[RESET]:[CYAN]dir[RESET][YELLOW]$[RESET]
-    mini_printf("%s%s%s@%s%s%s:%s%s%s%s$ %s",
-        COLOR_BOLD, COLOR_GREEN, username,
-        COLOR_BLUE, hostname,
-        COLOR_RESET,
-        COLOR_CYAN, dir,
-        COLOR_RESET,
-        COLOR_YELLOW,
-        COLOR_RESET);
+    // Wrap color codes to prevent cursor offset issues
+    // Use write() to avoid mini_printf interpretation issues
+    
+    write(1, COLOR_BOLD, my_strlen(COLOR_BOLD));
+    write(1, COLOR_GREEN, my_strlen(COLOR_GREEN));
+    write(1, username, my_strlen(username));
+    write(1, COLOR_RESET, my_strlen(COLOR_RESET));
+    
+    write(1, "@", 1);
+    
+    write(1, COLOR_BLUE, my_strlen(COLOR_BLUE));
+    write(1, hostname, my_strlen(hostname));
+    write(1, COLOR_RESET, my_strlen(COLOR_RESET));
+    
+    write(1, ":", 1);
+    
+    write(1, COLOR_CYAN, my_strlen(COLOR_CYAN));
+    write(1, dir, my_strlen(dir));
+    write(1, COLOR_RESET, my_strlen(COLOR_RESET));
+    
+    write(1, COLOR_YELLOW, my_strlen(COLOR_YELLOW));
+    write(1, "$ ", 2);
+    write(1, COLOR_RESET, my_strlen(COLOR_RESET));
 }
 
 // Simple prompt for non-colored terminals
