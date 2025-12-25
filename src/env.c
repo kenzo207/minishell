@@ -8,7 +8,7 @@
 
 char *get_path(char **env)
 {
-    char *dest = '\0';
+    char *dest = NULL;
     for (int i = 0; env[i]; i++){
         if (env[i][0] == 'P' && env[i][1] == 'A'
         && env[i][2] == 'T' && env[i][3] == 'H'){
@@ -22,13 +22,14 @@ char **clean_path(char **env)
 {
     char **path = NULL;
     char *src = get_path(env);
+    if (!src) return NULL;
     path = my_str_tok(&src[5], ":");
     return path;
 }
 
 char *get_home(char **env)
 {
-    char *dest = '\0';
+    char *dest = NULL;
     for (int i = 0; env[i]; i++){
         if (env[i][0] == 'H' && env[i][1] == 'O'
         && env[i][2] == 'M' && env[i][3] == 'E'){
