@@ -49,7 +49,7 @@ char *my_clean(char *str)
     int j = 0;
 
     while (str[i] != '\0'){
-        if (str[i] != ' ' || str[i] != '\n'){
+        if (str[i] != ' ' && str[i] != '\n'){
             break;
         }
         i++;
@@ -69,8 +69,8 @@ int has_special_chars(char *args)
 {
     int i = 0;
     while (i < my_strlen(args)){
-        if (args[i] == ' ' && args[i] == '\t' && args[i] == '\n'
-        && args[i] == '/'){
+        if (args[i] == ' ' || args[i] == '\t' || args[i] == '\n'
+        || args[i] == '/'){
             return 1;
         }
         i++;
