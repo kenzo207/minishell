@@ -1,0 +1,29 @@
+# Build artifacts
+*.o
+*.a
+*.so
+
+# Compiled binary
+mysh
+
+# Editor files
+*~
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Debug files
+*.dSYM/
+vgcore.*
+
+# Test outputs
+tests/*.log
+tests/tmp/
+
+# Coding style reports
+coding-style-reports.log
+
+# Temporary files
+*.tmp
+.DS_Store
