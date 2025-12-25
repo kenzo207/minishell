@@ -44,20 +44,37 @@ char *read_command_line(void)
     char *buf = malloc(sizeof(char) * 1024); // simplistic buffer
     int i = 0;
     char c = 0;
-
     int nread;
+
+    if (!buf) {
+        perror("malloc");
+        return NULL;
+    }
+
+    // Enable raw mode for this read
+    enable_raw_mode();
+
     while (1) {
         nread = read(STDIN_FILENO, &c, 1);
         if (nread == -1 && errno != EAGAIN) {
              perror("read");
+             disable_raw_mode();
+             free(buf);
              exit(1);
         }
         if (nread == 0) continue; // Timeout or nothing read
 
+        // Handle Ctrl-D (EOF) on empty line
+        if (c == 4 && i == 0) {
+            disable_raw_mode();
+            free(buf);
+            return NULL;
+        }
+
         if (c == '\n' || c == '\r') {
              my_putchar('\n');
              break;
-        } else if (c == 127) { // Backspace
+        } else if (c == 127 || c == 8) { // Backspace or Ctrl-H
             if (i > 0) {
                 my_putstr("\b \b");
                 i--;
@@ -71,6 +88,8 @@ char *read_command_line(void)
         // TODO: Handle escape sequences for arrows
     }
     buf[i] = '\0';
+    
+    // Disable raw mode after reading
     disable_raw_mode();
     return buf;
 }
