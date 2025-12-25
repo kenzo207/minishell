@@ -89,16 +89,14 @@ int my_strncmp(char *s1, char *s2, int n)
     return 0;
 }
 
-int my_putchar(char c)
+void my_putchar(char c)
 {
     write(1, &c, 1);
-    return 0;
 }
 
-int my_putstr(char *str)
+void my_putstr(char *str)
 {
     write(1, str, my_strlen(str));
-    return 0;
 }
 
 int my_put_nbr(int nb)
