@@ -1,0 +1,236 @@
+/*
+** EPITECH PROJECT, 2024
+** B-PSU-200-COT-2-1-minishell1-kenzo.hounkpe
+** File description:
+** others
+*/
+#include "../include/my.h"
+int my_strlen(char *str)
+{
+    int i = 0;
+
+    while (str[i] != '\0') {
+            i++;
+        }
+    return (i);
+}
+
+char *my_strcpy(char *dest, char const *str)
+{
+    int i = 0;
+
+    while (str[i] != '\0') {
+        dest[i] = str[i];
+        i++;
+    }
+    dest[i] = '\0';
+    return dest;
+}
+
+char *my_strcat(char *dest, char *src)
+{
+    int k = my_strlen(dest);
+    int j = my_strlen(src);
+    int o = k + j + 2;
+    char *ret = malloc(sizeof(char) * o);
+    int i;
+
+    for (i = 0; dest[i] != '\0'; i++){
+        ret[i] = dest[i];
+    }
+    ret[i] = '/';
+    i++;
+    for (int j = 0; src[j] != '\0'; j++){
+        ret[i + j] = src[j];
+    }
+    ret[i + j] = '\0';
+    return ret;
+}
+/*
+** EPITECH PROJECT, 2024
+** B-PSU-200-COT-2-1-minishell1-kenzo.hounkpe
+** File description:
+** others2
+*/
+
+#include "../include/my.h"
+
+char *my_strdup(char *src)
+{
+    int i = my_strlen(src);
+    char *dest = malloc(sizeof(char) * i);
+    int nb = 0;
+
+    for (; src[nb] != '\0'; nb++){
+        dest[nb] = src[nb];
+    }
+    dest[nb] = '\0';
+    return dest;
+}
+
+void disp_env(char **env)
+{
+    char **env1 = NULL;
+
+    for (int i = 0; env[i]; i++){
+        mini_printf("%s\n", env[i]);
+    }
+}
+
+void my_cd(char *src, char **env, char **tab)
+{
+    int k = 0;
+    char *str = get_home(env);
+
+    if (tab[1] == NULL){
+        chdir(str);
+    }
+    if (tab[1] != NULL && tab[1][0] != '-'){
+        k = chdir(tab[1]);
+    }
+    if (k != 0 && errno != ENOTDIR){
+        write(2, tab[1], my_strlen(tab[1]));
+        write(2, ": No such file or directory.\n", 29);
+        return;
+    }
+}
+
+char *get_path(char **env)
+{
+    char *dest = '\0';
+
+    for (int i = 0; env[i]; i++){
+        if (env[i][0] == 'P' && env[i][1] == 'A'
+        && env[i][2] == 'T' && env[i][3] == 'H'){
+            dest = my_strdup(env[i]);
+        }
+    }
+    return dest;
+}
+/*
+** EPITECH PROJECT, 2024
+** B-PSU-200-COT-2-1-minishell1-kenzo.hounkpe
+** File description:
+** others3
+*/
+
+#include "../include/my.h"
+
+int my_strcmp(char *dest, char *src)
+{
+    int i = 0;
+
+    if (my_strlen(src) != my_strlen(dest)){
+        return -1;
+    }
+    for (i = 0; src[i] != 0; i++) {
+        if (src[i] != dest[i]) {
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int my_exe(char *src, char **env, char **argv)
+{
+    pid_t pid = 0;
+    int i = access(src, F_OK);
+
+    if (errno == EACCES){
+        write(2, src, my_strlen(src));
+        write(2, ": Permission denied.", 21);
+        }
+    if (i == 0){
+        pid = fork();
+        if (pid == 0){
+            execve(src, argv, env);
+        }
+    }
+    if (i != 0){
+        write(2, argv[0], my_strlen(argv[0]));
+        write(2, ": Command not found.\n", 22);
+        return 1;
+    }
+    return 0; // Added return 
+}
+
+void others_functions(char *src, char **env, char **argv)
+{
+    if (my_strcmp(src, "env") == 0){
+        disp_env(env);
+    }
+    if (src[0] == 'c' && src[1] == 'd'){
+        my_cd(src, env, argv);
+    }
+    if ((src[0] == '.' && src[1] == '/')){
+        if (access(src, X_OK) == 0){
+            execve(src, argv, env);
+        }
+    }
+        if (src[0] == '/'){
+        my_exe(src, env, argv);
+    }
+}
+
+void my_functions(cmd_t *cmd, char **env, int gl)
+{
+    others_functions(cmd->args, env, cmd->argv);
+    if (my_strcmp(cmd->args, "exit") == 0){
+        mini_printf("exit\n");
+        exit(0);
+    }
+    if (my_strcmp(cmd->args, "setenv") == 0){
+        if (!cmd->argv[1]){
+            disp_env(env);
+        } else {
+            my_setenv(cmd->argv[1]);
+        }
+    }
+}
+
+void handle_path(char **env, cmd_t *cmd)
+{
+    char **path = clean_path(env);
+    pid_t pid = 0;
+    char *str = NULL;
+    path_state_t *state = malloc(sizeof(path_state_t));
+
+    state->index = 0;
+    state->path = path;
+    for (int j = 0; path[state->index]; state->index++){
+        str = my_strcat(path[state->index], cmd->argv[0]);
+        j = access(str, F_OK);
+        // Corrected call to print_error (was err)
+        // Check if I renamed err -> print_error in my.h ... Yes I did.
+        // Wait, why call err(0...) unconditionally? Logic seems weird.
+        // Original: err(0, NULL, inu, ken);
+        // I'll keep logic but start cleanup.
+        // The original logic calls err inside the loop? That's weird. 
+        // err() logic: if k!=0 && errno!=ENOTDIR -> no (k=0 here). 
+        // if j!=0 && !path[i+1] -> command not found.
+        
+        // Let's replicate behavior for now, but careful with arguments.
+        // int print_error(int k, char **argv, path_state_t *state, cmd_t *cmd);
+        // calling print_error(0, NULL, state, cmd) might crash if accessing argv[1] inside print_error.
+        // original err: if k!=0 use tab[1] (NULL here). Safe if k=0.
+        // if errno==ENOTDIR use tab[1]. Dangerous.
+        
+        // I'll leave it as comment or simplified logic for now. 
+        // Logic: if not found in ANY path, print error at the end.
+        
+        if (j == 0){
+                pid = fork();
+            if (pid == 0){
+                execve(str, cmd->argv, env);
+                exit(0); // Should exit child
+            }
+            wait(NULL); // Parent waits? Original had 'break' then 'break'.
+            break;
+        }
+        // Check if last path to print error
+        if (!path[state->index + 1]) {
+             write(2, cmd->argv[0], my_strlen(cmd->argv[0]));
+             write(2, ": Command not found.\n", 21);
+        }
+    }
+}
