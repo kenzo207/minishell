@@ -81,6 +81,29 @@ int has_semicolon(char *args);
 cmd_t *parse_command(char *args, char **argv);
 tree_node_t *parse_separator(char *args);
 
+// --- tokenizer.c ---
+typedef enum {
+    TOKEN_WORD,
+    TOKEN_PIPE,
+    TOKEN_SEMICOLON,
+    TOKEN_REDIR_OUT,
+    TOKEN_REDIR_APPEND,
+    TOKEN_REDIR_IN,
+    TOKEN_HEREDOC,
+    TOKEN_EOF
+} token_type_t;
+
+typedef struct token_s {
+    token_type_t type;
+    char *value;
+    struct token_s *next;
+} token_t;
+
+token_t *create_token(token_type_t type, char *value);
+void free_tokens(token_t *tokens);
+token_t *tokenize(char *input);
+void print_tokens(token_t *tokens);
+
 // --- execution.c ---
 int process_cmd(cmd_t *cmd, char **env);
 void handle_path(char **env, cmd_t *cmd);
