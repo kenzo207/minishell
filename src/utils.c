@@ -46,9 +46,9 @@ char *my_strcat(char *dest, char *src)
     return ret;
 }
 
-char *my_strdup(char *src)
+char *my_strdup(char const *src)
 {
-    int i = my_strlen(src);
+    int i = my_strlen((char *)src);
     char *dest = malloc(sizeof(char) * (i + 1));
     int nb = 0;
 

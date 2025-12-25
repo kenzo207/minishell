@@ -1,46 +1,53 @@
 /*
 ** EPITECH PROJECT, 2024
-** B-PSU-200-COT-2-1-minishell1-kenzo.hounkpe
+** B-PSU-200-COT-2-1-minishell1-kenzo.hounkpe/*
+** EPITECH PROJECT, 2024
+** TCSH
 ** File description:
-** mini_printf
+** mini_printf.c
 */
-
 #include "../include/shell.h"
+#include <stdarg.h>
 
-
-static int lettre_specifique(char lettre, va_list ken)
+int lettre_specifique(const char *format, va_list ken)
 {
     int c = 0;
-
-    if (lettre == 'd' || lettre == 'i'){
+    if (*format == 'd' || *format == 'i'){
         c += my_put_nbr(va_arg(ken, int));
     }
-    if (lettre == 'c'){
-        c += my_putchar(va_arg(ken, long));
+    if (*format == 'c'){
+        my_putchar(va_arg(ken, long));
+        c++;
     }
-    if (lettre == 's'){
-        c += my_putstr(va_arg(ken, char *));
+    if (*format == 's'){
+        char *str = va_arg(ken, char *);
+        my_putstr(str);
+        c += my_strlen(str);
     }
-    if (lettre == '%'){
-        c += my_putchar('%');
+    if (*format == '%'){
+        my_putchar('%');
+        c++;
     }
-    return (c);
+    return c;
 }
 
-int mini_printf(const char *format, ...)
+int mini_printf(char *format, ...)
 {
     va_list ken;
+    int i = 0;
     int c = 0;
 
     va_start(ken, format);
-    for (; format[c] != '\0'; c++){
-        if (format[c] == '%'){
-            c++;
-            lettre_specifique(format[c], ken);
+    while (format[i] != '\0'){
+        if (format[i] == '%'){
+            c += lettre_specifique(&format[i + 1], ken);
+            i++;
         } else {
-            my_putchar(format[c]);
+            my_putchar(format[i]);
+            c++;
         }
+        i++;
     }
     va_end(ken);
-    return (c);
+    return c;
 }
