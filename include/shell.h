@@ -60,7 +60,6 @@ void display_simple_prompt(shell_state_t *state);
 // --- aliases.c ---
 char **apply_alias(char **argv);
 
-// --- completion.c ---
 int complete_input(char *buf, int *pos, shell_state_t *state);
 char **my_str_tok(char *str, char *sep);
 
