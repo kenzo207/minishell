@@ -178,7 +178,7 @@ int print_error(int k, char **argv, path_state_t *state, cmd_t *cmd);
 void check_pid(pid_t pid); // was myl
 
 // --- input.c ---
-char *read_command_line(void);
+char *read_command_line(shell_state_t *state);
 // unused or TODO
 int funt(void); 
 int funty(int i, size_t size, char *args, int gl);

@@ -39,7 +39,7 @@ void enable_raw_mode(void)
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 }
 
-char *read_command_line(void)
+char *read_command_line(shell_state_t *state)
 {
     char *buf = malloc(sizeof(char) * 1024);
     int i = 0;
@@ -93,7 +93,14 @@ char *read_command_line(void)
         } else if (c == 9) { // Tab key
             // Tab completion
             buf[i] = '\0'; // Null-terminate for completion
-            complete_input(buf, &i);
+            int need_reprint = complete_input(buf, &i, state);
+            buf[i] = '\0'; // Update null terminator
+            
+            // If multiple matches were shown, reprint prompt and buffer
+            if (need_reprint && is_tty) {
+                display_prompt(state);
+                write(1, buf, i);
+            }
             buf[i] = '\0'; // Update null terminator
             continue;
         } else if (c >= 32 && c < 127) {
