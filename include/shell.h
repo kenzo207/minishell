@@ -69,7 +69,7 @@ char **my_unsetenv(char **env, char *name);
 
 // --- builtins.c ---
 void my_cd(char *src, char **env, char **argv);
-void my_functions(cmd_t *cmd, char **env, int gl); // Dispatcher
+void my_functions(cmd_t *cmd, shell_state_t *state, int gl); // Updated to use shell_state
 
 // --- parsing.c ---
 char *clean_str(char *str);
@@ -84,11 +84,11 @@ tree_node_t *parse_separator(char *args);
 int process_cmd(cmd_t *cmd, char **env);
 void handle_path(char **env, cmd_t *cmd);
 int my_exe(char *src, char **env, char **argv);
-void execute_command(char **env, size_t size, int gl, cmd_t *cmd);
-void move(char **env, size_t size, int gl, cmd_t *cmd);
-int handle_pipe(char **env, size_t size, int gl, tree_node_t *node);
-int handle_separators(char **env, size_t size, int gl, tree_node_t *node, char *args);
-int execute_sequence(char **env, size_t size, int gl, tree_node_t *node);
+void execute_command(shell_state_t *state, size_t size, int gl, cmd_t *cmd); // Updated
+void move(shell_state_t *state, size_t size, int gl, cmd_t *cmd); // Updated
+int handle_pipe(shell_state_t *state, size_t size, int gl, tree_node_t *node); // Updated
+int handle_separators(shell_state_t *state, size_t size, int gl, tree_node_t *node, char *args); // Updated
+int execute_sequence(shell_state_t *state, size_t size, int gl, tree_node_t *node); // Updated
 
 // --- errors.c ---
 int print_error(int k, char **argv, path_state_t *state, cmd_t *cmd);

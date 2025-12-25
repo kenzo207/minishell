@@ -78,25 +78,26 @@ void handle_path(char **env, cmd_t *cmd)
     }
 }
 
-void move(char **env, size_t size, int gl, cmd_t *cmd)
+void move(shell_state_t *state, size_t size, int gl, cmd_t *cmd)
 {
     if ((cmd->args[0] == 'c' && cmd->args[1] == 'd')
     || my_strcmp(cmd->args, "env") == 0
     || my_strcmp(cmd->args, "exit") == 0 || gl < 0
     || my_strcmp(cmd->args, "setenv") == 0
+    || my_strcmp(cmd->args, "unsetenv") == 0
     || (cmd->args[0] == '.' && cmd->args[1] == '/')){
-        my_functions(cmd, env, gl);
+        my_functions(cmd, state, gl);
     } else if (my_strcmp(cmd->args, " ") != 0
     && my_strcmp(cmd->args, "\n") != 0
     && has_special_chars(cmd->args) != 1){
-        handle_path(env, cmd);
+        handle_path(state->env, cmd);
     }
 }
 
-void execute_command(char **env, size_t size, int gl, cmd_t *cmd)
+void execute_command(shell_state_t *state, size_t size, int gl, cmd_t *cmd)
 {
-    if (process_cmd(cmd, env) != 1){
-        move(env, size, gl, cmd);
+    if (process_cmd(cmd, state->env) != 1){
+        move(state, size, gl, cmd);
     }
 }
 
@@ -108,7 +109,7 @@ void check_pid(pid_t pid)
     }
 }
 
-int handle_pipe(char **env, size_t size, int gl, tree_node_t *node)
+int handle_pipe(shell_state_t *state, size_t size, int gl, tree_node_t *node)
 {
     int fd[2];
     pid_t pid;
@@ -121,35 +122,35 @@ int handle_pipe(char **env, size_t size, int gl, tree_node_t *node)
         close(fd[0]);
         dup2(fd[1], STDOUT_FILENO);
         close(fd[1]);
-        execute_command(env, size, gl, node->left);
-        exit(0); // Ensure child exits
+        execute_command(state, size, gl, node->left);
+        exit(0);
     } else {
         close(fd[1]);
         dup2(fd[0], STDIN_FILENO);
         close(fd[0]);
-        execute_command(env, size, gl, node->right);
+        execute_command(state, size, gl, node->right);
         wait(NULL);
     }
     return 0;
 }
 
-int execute_sequence(char **env, size_t size, int gl, tree_node_t *node)
+int execute_sequence(shell_state_t *state, size_t size, int gl, tree_node_t *node)
 {
-    execute_command(env, size, gl, node->left);
-    execute_command(env, size, gl, node->right);
+    execute_command(state, size, gl, node->left);
+    execute_command(state, size, gl, node->right);
     wait(NULL);
     return 0;
 }
 
-int handle_separators(char **env, size_t size, int gl, tree_node_t *node, char *args)
+int handle_separators(shell_state_t *state, size_t size, int gl, tree_node_t *node, char *args)
 {
     if (has_pipe(args) == 2) {
         node = parse_separator(args);
-        handle_pipe(env, size, gl, node);
+        handle_pipe(state, size, gl, node);
     }
     if (has_semicolon(args) == 3){ 
         node = parse_separator(args);
-        execute_sequence(env, size, gl, node);
+        execute_sequence(state, size, gl, node);
     }
     return 0;
 }

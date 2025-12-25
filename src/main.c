@@ -26,9 +26,9 @@ void my_shell(char **av, shell_state_t *state)
 
         if (has_pipe(args) != 2 && has_semicolon(args) != 3){
             cmd = parse_command(args, tab);
-            execute_command(state->env, size, gl, cmd);
+            execute_command(state, size, gl, cmd);
         } else {
-             handle_separators(state->env, size, gl, node, args); 
+             handle_separators(state, size, gl, node, args); 
         }
         wait(&i);
         free(args);
