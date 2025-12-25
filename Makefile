@@ -9,6 +9,7 @@ SRCS	=	src/main.c \
 			src/parsing.c \
 			src/tokenizer.c \
 			src/ast.c \
+			src/ast_executor.c \
 			src/execution.c \
 			src/builtins.c \
 			src/env.c \

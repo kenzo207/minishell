@@ -147,6 +147,13 @@ void free_ast(ast_node_t *node);
 ast_node_t *parse(token_t *tokens);
 void print_ast(ast_node_t *node, int depth);
 
+// --- ast_executor.c ---
+int apply_redirections(redir_t *redirs);
+int execute_ast_command(ast_node_t *node, shell_state_t *state);
+int execute_ast_pipeline(ast_node_t *node, shell_state_t *state);
+int execute_ast_sequence(ast_node_t *node, shell_state_t *state);
+int execute_ast_node(ast_node_t *node, shell_state_t *state);
+
 // --- execution.c ---
 int process_cmd(cmd_t *cmd, char **env);
 void handle_path(char **env, cmd_t *cmd);
