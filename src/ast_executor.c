@@ -73,6 +73,10 @@ int execute_ast_command(ast_node_t *node, shell_state_t *state)
     if (!argv || !argv[0])
         return -1;
     
+    // Apply aliases (e.g., ls -> ls --color=auto)
+    argv = apply_alias(argv);
+    node->data.command.argv = argv;
+    
     // Check for builtins
     if (my_strcmp(argv[0], "cd") == 0 ||
         my_strcmp(argv[0], "env") == 0 ||

@@ -56,6 +56,9 @@ char **my_str_to_word_array(char *str, char sep);
 // --- prompt.c ---
 void display_prompt(shell_state_t *state);
 void display_simple_prompt(shell_state_t *state);
+
+// --- aliases.c ---
+char **apply_alias(char **argv);
 char **my_str_tok(char *str, char *sep);
 
 // --- env.c ---

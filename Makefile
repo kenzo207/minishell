@@ -17,6 +17,7 @@ SRCS	=	src/main.c \
 			src/errors.c \
 			src/input.c \
 			src/prompt.c \
+			src/aliases.c \
 			src/mini_printf.c \
 			src/my_str_to_word_array.c \
 			src/help.c \
